@@ -186,6 +186,7 @@
   "lastOpenFiles": [
     "src/problem1/飞行器遥测数据分析与控制系统.md",
     "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
+    "src/problem1/question(corrected).md",
     "src/problem2/question.md",
     "src/images/Steady-state temperature field distribution.png",
     "src/images/Runge_phenomenon.png",
@@ -198,7 +199,6 @@
     "src/problem2/plot_heatmap_py.txt",
     "src/problem2/plot_heatmap.py",
     "src/problem2/main.cpp",
-    "src/problem1/question(corrected).md",
     "src/images/Runge_phenomenon_new.png",
     "tmp_test2.txt",
     "tmp_test.txt",
