@@ -7,6 +7,9 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
+                "-std=c++17",
+                "-I${workspaceFolder}/include",
+                "-I/d/0software/eigen-5.0.0",
                 "${file}",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe"
