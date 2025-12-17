@@ -11,12 +11,14 @@
             "id": "58a923049c45da1d",
             "type": "leaf",
             "state": {
-              "type": "image",
+              "type": "markdown",
               "state": {
-                "file": "src/images/Steady-state temperature field distribution.png"
+                "file": "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-image",
-              "title": "Steady-state temperature field distribution"
+              "icon": "lucide-file",
+              "title": "基于有限体积法(FVM)的二维稳态热传导数值模拟"
             }
           }
         ]
@@ -92,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "src/images/Steady-state temperature field distribution.png",
+                "file": "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Steady-state temperature field distribution 的反向链接列表"
+              "title": "基于有限体积法(FVM)的二维稳态热传导数值模拟 的反向链接列表"
             }
           },
           {
@@ -111,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "src/images/Steady-state temperature field distribution.png",
+                "file": "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Steady-state temperature field distribution 的出链列表"
+              "title": "基于有限体积法(FVM)的二维稳态热传导数值模拟 的出链列表"
             }
           },
           {
@@ -154,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "src/images/Steady-state temperature field distribution.png",
+                "file": "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Steady-state temperature field distribution 的大纲"
+              "title": "基于有限体积法(FVM)的二维稳态热传导数值模拟 的大纲"
             }
           }
         ]
@@ -182,11 +184,13 @@
   },
   "active": "58a923049c45da1d",
   "lastOpenFiles": [
-    "src/images/Runge_phenomenon.png",
+    "src/problem1/飞行器遥测数据分析与控制系统.md",
     "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
+    "src/problem2/question.md",
+    "src/images/Steady-state temperature field distribution.png",
+    "src/images/Runge_phenomenon.png",
     "src/problem2/result_plot_cn.png",
     "src/problem2/result_plot.png",
-    "src/images/Steady-state temperature field distribution.png",
     "src/problem2/temperature_field.csv",
     "src/problem2/main.exe",
     "src/problem2/plot_result.py",
@@ -194,7 +198,6 @@
     "src/problem2/plot_heatmap_py.txt",
     "src/problem2/plot_heatmap.py",
     "src/problem2/main.cpp",
-    "src/problem1/飞行器遥测数据分析与控制系统.md",
     "src/problem1/question(corrected).md",
     "src/images/Runge_phenomenon_new.png",
     "tmp_test2.txt",
