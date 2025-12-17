@@ -1,0 +1,25 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/include",
+        "D:/0software/eigen-5.0.0"
+      ],
+      "defines": ["_DEBUG", "UNICODE", "_UNICODE"],
+      "compilerPath": "D:/0software/x86_64-8.1.0-release-posix-seh-rt_v6-rev0/mingw64/bin/g++.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "gcc-x64",
+      "browse": {
+        "path": [
+          "${workspaceFolder}",
+          "D:/0software/eigen-5.0.0"
+        ],
+        "limitSymbolsToIncludedHeaders": true
+      }
+    }
+  ],
+  "version": 4
+}
