@@ -184,6 +184,7 @@
   },
   "active": "58a923049c45da1d",
   "lastOpenFiles": [
+    "src/problem2/plot_heatmap_py.txt",
     "src/problem2/plot_heatmap.py",
     "src/problem2/main.cpp",
     "src/problem1/飞行器遥测数据分析与控制系统.md",
@@ -205,7 +206,6 @@
     "src/problem1/test.cpp",
     "src/problem1/c.cpp",
     "src/problem1/main.exe",
-    "flight_solver.exe",
     "src/problem1/bonus_question.md",
     "data/flight_data.md"
   ]
