@@ -95,59 +95,52 @@ Vector performPolyFit(const std::vector<Point>& data, int degree) {
     Vector coeffs = LinearAlgebra::solveGaussian(A, B);
     return coeffs;
 }
-int main()
-{
-    // 1. 读取数据 (注意路径：根据编译执行位置不同，路径可能需要调整)
-    // 假设我们在项目根目录执行编译后的程序
+int main() {
+    // 1. 读取数据 (请保持你的绝对路径)
     std::string filepath = "D:\\0VS_user\\Numerical-Analysis-Final\\data\\flight_data.csv";
     std::vector<Point> flightData = readCSV(filepath);
 
-    if (flightData.empty())
-    {
-        std::cerr << "No data loaded. Check path!" << std::endl;
-        return 1;
+    if (flightData.empty()) { std::cerr << "Error loading data.\n"; return 1; }
+
+    // 2. 插值补全 (保留之前的逻辑)
+    std::vector<Point> group1 = {getPointByTime(flightData, 4), getPointByTime(flightData, 5), getPointByTime(flightData, 9)};
+    std::vector<Point> group2 = {getPointByTime(flightData, 5), getPointByTime(flightData, 9), getPointByTime(flightData, 10)};
+    
+    flightData[6].h = Interpolator::lagrange(group1, 6.0);
+    flightData[7].h = Interpolator::lagrange(group1, 7.0);
+    flightData[8].h = Interpolator::lagrange(group2, 8.0);
+
+    std::cout << "Data restoration complete.\n";
+
+    // 3. 执行二次多项式拟合 (h = c + bt + at^2)
+    // 我们使用所有数据点进行拟合
+    std::cout << "\n--- Performing Quadratic Regression ---" << std::endl;
+    Vector coeffs = performPolyFit(flightData, 2);
+
+    double c = coeffs[0];
+    double b = coeffs[1];
+    double a = coeffs[2];
+
+    std::cout << "Fitted Model: h(t) = " << a << " * t^2 + " << b << " * t + " << c << std::endl;
+
+    // 4. 计算均方误差 (MSE)
+    double mse = 0.0;
+    for (const auto& p : flightData) {
+        double pred = a * p.t * p.t + b * p.t + c;
+        mse += std::pow(pred - p.h, 2);
     }
+    mse /= flightData.size();
+    std::cout << "MSE: " << mse << std::endl;
 
-    std::cout << "Data loaded successfully. Total rows: " << flightData.size() << std::endl;
-
-    // 2. 准备插值所需的已知点 (根据题目纠错要求)
-    // Group 1: t=4, 5, 9 用于插值 t=6, 7
-    std::vector<Point> group1;
-    group1.push_back(getPointByTime(flightData, 4.0));
-    group1.push_back(getPointByTime(flightData, 5.0));
-    group1.push_back(getPointByTime(flightData, 9.0));
-
-    // Group 2: t=5, 9, 10 用于插值 t=8
-    std::vector<Point> group2;
-    group2.push_back(getPointByTime(flightData, 5.0));
-    group2.push_back(getPointByTime(flightData, 9.0));
-    group2.push_back(getPointByTime(flightData, 10.0));
-
-    // 3. 执行插值并填补数据
-    std::cout << "\n--- Interpolation Results ---" << std::endl;
-
-    // 恢复 t=6
-    double h6 = Interpolator::lagrange(group1, 6.0);
-    std::cout << "Restored t=6: " << h6 << std::endl;
-    // 更新内存中的数据
-    flightData[6].h = h6;
-
-    // 恢复 t=7
-    double h7 = Interpolator::lagrange(group1, 7.0);
-    std::cout << "Restored t=7: " << h7 << std::endl;
-    flightData[7].h = h7;
-
-    // 恢复 t=8
-    double h8 = Interpolator::lagrange(group2, 8.0);
-    std::cout << "Restored t=8: " << h8 << std::endl;
-    flightData[8].h = h8;
-
-    // 4. 输出完整数据用于检查
-    std::cout << "\n--- Full Data Check ---" << std::endl;
-    for (const auto &p : flightData)
-    {
-        std::cout << "t=" << p.t << ", h=" << p.h << std::endl;
+    // 5. 导出拟合结果到CSV (用于画图)
+    // 我们可以生成更密集的点来画平滑曲线
+    std::ofstream outfile("data/regression_result.csv");
+    outfile << "t,h_real,h_pred\n";
+    for(const auto& p : flightData) {
+        double pred = a * p.t * p.t + b * p.t + c;
+        outfile << p.t << "," << p.h << "," << pred << "\n";
     }
+    std::cout << "Regression data saved to data/regression_result.csv" << std::endl;
 
     return 0;
 }
