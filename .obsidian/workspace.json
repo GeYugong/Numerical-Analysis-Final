@@ -150,12 +150,13 @@
             "state": {
               "type": "outline",
               "state": {
+                "file": "src/problem1/main_question.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "大纲"
+              "title": "main_question 的大纲"
             }
           }
         ]
@@ -178,9 +179,19 @@
   },
   "active": "326f1d82887c03e3",
   "lastOpenFiles": [
+    "src/problem1/main.exe",
+    "flight_solver.exe",
+    "src/problem1/main.cpp",
+    "include/NumCpp.h",
+    "src/problem1/bonus_question.md",
+    "src/problem1/main_question.md",
+    "src/problem2/question",
+    "src/problem2/新建文件夹",
+    "src/problem1/question",
+    "src/problem1/新建文件夹",
+    "questions",
+    "新建文件夹",
     "data/flight_data.md",
-    "data/flight_data.csv",
-    "data/fldata.csv",
-    "data/data.csv"
+    "data/flight_data.csv"
   ]
 }
