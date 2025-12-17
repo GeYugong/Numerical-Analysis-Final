@@ -184,6 +184,9 @@
   },
   "active": "58a923049c45da1d",
   "lastOpenFiles": [
+    "src/problem2/result_plot_cn.png",
+    "src/problem2/result_plot.png",
+    "src/problem2/temperature_field.csv",
     "src/problem2/main.exe",
     "src/problem2/plot_result.py",
     "include/NumUtils.h",
@@ -203,8 +206,6 @@
     "runge_comparison_cn.png",
     "regression_curve_cn.png",
     "runge_comparison.png",
-    "src/problem1/runge_phenomenon.py",
-    "src/problem1/regression_plot.py",
     "src/problem1/main_question.md",
     "src/problem1/bonus_question.md",
     "data/flight_data.md"
