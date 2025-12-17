@@ -130,6 +130,8 @@ void runBonusQuestion()
         // 生成 200 个绘图点
         double plot_step = (end - start) / 200.0;
         double max_err_lagrange = 0.0;
+        double max_err_newton = 0.0;
+        double max_err_piecewise = 0.0;
         double max_err_spline = 0.0;
 
         for (int i = 0; i <= 200; ++i)
@@ -144,14 +146,18 @@ void runBonusQuestion()
 
             // 记录误差用于简单的控制台输出
             max_err_lagrange = std::max(max_err_lagrange, std::abs(y_lag - y_true));
+            max_err_newton = std::max(max_err_newton, std::abs(y_new - y_true));
+            max_err_piecewise = std::max(max_err_piecewise, std::abs(y_pw - y_true));
             max_err_spline = std::max(max_err_spline, std::abs(y_spl - y_true));
 
             outfile << x << "," << y_true << "," << y_lag << "," << y_new << "," << y_pw << "," << y_spl << "\n";
         }
 
         std::cout << "n=" << n << ": Saved to " << filename << std::endl;
-        std::cout << "     Max Error (Lagrange): " << max_err_lagrange << std::endl;
-        std::cout << "     Max Error (Spline)  : " << max_err_spline << std::endl;
+        std::cout << "     Max Error (Lagrange) : " << max_err_lagrange << std::endl;
+        std::cout << "     Max Error (Newton)   : " << max_err_newton << std::endl;
+        std::cout << "     Max Error (Piecewise): " << max_err_piecewise << std::endl;
+        std::cout << "     Max Error (Spline)   : " << max_err_spline << std::endl;
     }
 }
 int main()
