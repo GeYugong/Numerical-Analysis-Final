@@ -11,14 +11,12 @@
             "id": "58a923049c45da1d",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "image",
               "state": {
-                "file": "src/problem2/基于有限体积法与面向对象数值库的二维稳态热传导数值模拟.md",
-                "mode": "source",
-                "source": false
+                "file": "src/images/Steady-state temperature field distribution.png"
               },
-              "icon": "lucide-file",
-              "title": "基于有限体积法与面向对象数值库的二维稳态热传导数值模拟"
+              "icon": "lucide-image",
+              "title": "Steady-state temperature field distribution"
             }
           }
         ]
@@ -94,7 +92,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "src/problem2/基于有限体积法与面向对象数值库的二维稳态热传导数值模拟.md",
+                "file": "src/images/Steady-state temperature field distribution.png",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +102,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "基于有限体积法与面向对象数值库的二维稳态热传导数值模拟 的反向链接列表"
+              "title": "Steady-state temperature field distribution 的反向链接列表"
             }
           },
           {
@@ -113,12 +111,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "src/problem2/基于有限体积法与面向对象数值库的二维稳态热传导数值模拟.md",
+                "file": "src/images/Steady-state temperature field distribution.png",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "基于有限体积法与面向对象数值库的二维稳态热传导数值模拟 的出链列表"
+              "title": "Steady-state temperature field distribution 的出链列表"
             }
           },
           {
@@ -156,13 +154,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "src/problem2/基于有限体积法与面向对象数值库的二维稳态热传导数值模拟.md",
+                "file": "src/images/Steady-state temperature field distribution.png",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "基于有限体积法与面向对象数值库的二维稳态热传导数值模拟 的大纲"
+              "title": "Steady-state temperature field distribution 的大纲"
             }
           }
         ]
@@ -184,8 +182,11 @@
   },
   "active": "58a923049c45da1d",
   "lastOpenFiles": [
+    "src/images/Runge_phenomenon.png",
+    "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
     "src/problem2/result_plot_cn.png",
     "src/problem2/result_plot.png",
+    "src/images/Steady-state temperature field distribution.png",
     "src/problem2/temperature_field.csv",
     "src/problem2/main.exe",
     "src/problem2/plot_result.py",
@@ -195,11 +196,9 @@
     "src/problem2/main.cpp",
     "src/problem1/飞行器遥测数据分析与控制系统.md",
     "src/problem1/question(corrected).md",
-    "src/problem2/基于有限体积法与面向对象数值库的二维稳态热传导数值模拟.md",
     "src/images/Runge_phenomenon_new.png",
     "tmp_test2.txt",
     "tmp_test.txt",
-    "src/images/Runge_phenomenon.png",
     "src/images/aircraft.png",
     "src/images",
     "src/images.md",
