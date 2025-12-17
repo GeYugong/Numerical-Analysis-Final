@@ -67,7 +67,34 @@ Point getPointByTime(const std::vector<Point> &all_data, double t)
     }
     return {t, 0.0}; // Should not happen if data is complete
 }
+// 多项式拟合函数
+// 返回系数向量 {c, b, a} 对应 c + bt + at^2
+Vector performPolyFit(const std::vector<Point>& data, int degree) {
+    int n = data.size();
+    int terms = degree + 1; // 二次函数有3个系数
 
+    // 1. 构建设计矩阵 X (Vandermonde matrix)
+    // Row i: [1, t_i, t_i^2]
+    Matrix X = LinearAlgebra::zeros(n, terms);
+    Vector Y(n);
+
+    for (int i = 0; i < n; ++i) {
+        double t = data[i].t;
+        Y[i] = data[i].h;
+        for (int j = 0; j < terms; ++j) {
+            X[i][j] = std::pow(t, j);
+        }
+    }
+
+    // 2. 构建正规方程: (X^T * X) * beta = X^T * Y
+    Matrix XT = LinearAlgebra::transpose(X);
+    Matrix A = LinearAlgebra::multiply(XT, X);
+    Vector B = LinearAlgebra::multiply(XT, Y); // 这里是矩阵乘向量
+
+    // 3. 求解
+    Vector coeffs = LinearAlgebra::solveGaussian(A, B);
+    return coeffs;
+}
 int main()
 {
     // 1. 读取数据 (注意路径：根据编译执行位置不同，路径可能需要调整)
