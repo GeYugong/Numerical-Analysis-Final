@@ -1,7 +1,7 @@
 /**
  * File: include/NumCpp.h
  * Author: Ge Yugong
- * Description: 基础数值分析算法库 (No Eigen) - 包含插值与矩阵求解
+ * Description: 基础数值分析算法库 (No Eigen) - 包含插值、矩阵求解(高斯/SOR)、非线性方程求解
  */
 
 #ifndef NUMCPP_H
@@ -12,6 +12,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <iomanip>
+#include <functional> // 新增：用于传递数学函数
 
 // 基础数据结构
 struct Point {
@@ -79,15 +80,13 @@ public:
     }
 
     // 高斯消元法求解线性方程组 Ax = b
-    // 返回解向量 x
     static Vector solveGaussian(Matrix A, Vector b) {
         int n = A.size();
         if (n == 0 || A[0].size() != n || b.size() != n)
             throw std::invalid_argument("Invalid system for Gaussian elimination");
 
-        // 1. 前向消元 (Forward Elimination)
+        // 1. 前向消元
         for (int i = 0; i < n; ++i) {
-            // 选主元 (Partial Pivoting)
             int pivot = i;
             for (int k = i + 1; k < n; ++k) {
                 if (std::abs(A[k][i]) > std::abs(A[pivot][i])) pivot = k;
@@ -98,7 +97,6 @@ public:
             if (std::abs(A[i][i]) < 1e-10) 
                 throw std::runtime_error("Matrix is singular!");
 
-            // 消元
             for (int k = i + 1; k < n; ++k) {
                 double factor = A[k][i] / A[i][i];
                 for (int j = i; j < n; ++j) {
@@ -108,7 +106,7 @@ public:
             }
         }
 
-        // 2. 回代 (Back Substitution)
+        // 2. 回代
         Vector x(n);
         for (int i = n - 1; i >= 0; --i) {
             double sum = 0.0;
@@ -116,6 +114,68 @@ public:
                 sum += A[i][j] * x[j];
             }
             x[i] = (b[i] - sum) / A[i][i];
+        }
+        return x;
+    }
+
+    // --- 新增功能: SOR 迭代求解器 ---
+    // 返回 pair<解向量, 迭代次数>
+    static std::pair<Vector, int> solveSOR(const Matrix& A, const Vector& b, 
+                                           double omega, Vector x0, 
+                                           double tol, int max_iter) {
+        int n = A.size();
+        Vector x = x0;
+        int iter = 0;
+        
+        for (; iter < max_iter; ++iter) {
+            Vector x_new = x;
+            double max_diff = 0.0;
+            
+            for (int i = 0; i < n; ++i) {
+                double sigma = 0.0;
+                // 利用 Gauss-Seidel 特性: j < i 使用新值, j > i 使用旧值
+                for (int j = 0; j < n; ++j) {
+                    if (j != i) {
+                        // 注意：这里 x_new[j] 在 j<i 时已经是更新过的值了
+                        sigma += A[i][j] * x_new[j]; 
+                    }
+                }
+                // SOR 公式: x_new = (1-w)x_old + (w/aii)(b - sigma)
+                double x_sor = (1 - omega) * x[i] + (omega / A[i][i]) * (b[i] - sigma);
+                
+                double diff = std::abs(x_sor - x[i]);
+                if (diff > max_diff) max_diff = diff;
+                
+                x_new[i] = x_sor;
+            }
+            x = x_new;
+            if (max_diff < tol) break;
+        }
+        return {x, iter + 1};
+    }
+};
+
+// --- 新增类: 非线性方程求解器 ---
+class Solvers {
+public:
+    // 牛顿迭代法求根: x_{k+1} = x_k - f(x)/f'(x)
+    static double newtonMethod(std::function<double(double)> func, 
+                               std::function<double(double)> deriv, 
+                               double x0, double tol = 1e-6, int max_iter = 100) {
+        double x = x0;
+        for (int i = 0; i < max_iter; ++i) {
+            double f_val = func(x);
+            double f_deriv = deriv(x);
+            
+            if (std::abs(f_deriv) < 1e-10) {
+                std::cerr << "Warning: Derivative too close to 0 in Newton method.\n";
+                break; 
+            }
+            
+            double step = f_val / f_deriv;
+            x = x - step;
+            
+            if (std::abs(step) < tol) return x;
         }
         return x;
     }

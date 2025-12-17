@@ -179,6 +179,7 @@
   },
   "active": "326f1d82887c03e3",
   "lastOpenFiles": [
+    "src/problem1/test.cpp",
     "src/problem1/c.cpp",
     "src/problem1/main.exe",
     "flight_solver.exe",
@@ -191,7 +192,6 @@
     "src/problem1/question",
     "src/problem1/新建文件夹",
     "questions",
-    "新建文件夹",
     "data/flight_data.md"
   ]
 }
