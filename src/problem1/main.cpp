@@ -154,10 +154,8 @@ void runBonusQuestion()
         }
 
         std::cout << "n=" << n << ": Saved to " << filename << std::endl;
-        std::cout << "     Max Error (Lagrange) : " << max_err_lagrange << std::endl;
-        std::cout << "     Max Error (Newton)   : " << max_err_newton << std::endl;
-        std::cout << "     Max Error (Piecewise): " << max_err_piecewise << std::endl;
-        std::cout << "     Max Error (Spline)   : " << max_err_spline << std::endl;
+        std::cout << "     Max Error (Lagrange): " << max_err_lagrange << std::endl;
+        std::cout << "     Max Error (Spline)  : " << max_err_spline << std::endl;
     }
 }
 int main()
