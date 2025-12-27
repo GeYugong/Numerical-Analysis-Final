@@ -188,6 +188,7 @@ namespace NumUtils {
 ```cpp
 #include "../../include/NumUtils.h"
 #include <iostream>
+using namespace std;
 
 int main() {
     // 1. 参数定义 (对应题目要求：50*50均匀网格)
@@ -195,10 +196,10 @@ int main() {
     double dx = 1.0/Nx, dy = 1.0/Ny, k = 1.0;
     int N_dof = Nx * Ny;
 
-    std::cout << "初始化有限体积法求解器，网格大小: " << Nx << "x" << Ny << "..." << std::endl;
+    cout << "初始化有限体积法求解器，网格大小: " << Nx << "x" << Ny << "..." << endl;
 
     // 2. 准备稀疏矩阵的三元组
-    std::vector<NumUtils::Triplet> triplets;
+    vector<NumUtils::Triplet> triplets;
     // 预分配内存以提升填充速度 (5点差分格式，每行最多5个非零元)
     triplets.reserve(N_dof * 5); 
     
@@ -261,13 +262,13 @@ int main() {
     A.setFromTriplets(triplets.begin(), triplets.end());
     
     NumUtils::Vector x(N_dof);
-    std::cout << "求解线性系统..." << std::endl;
+    cout << "求解线性系统..." << endl;
     
     // 使用 LLT 分解 (Cholesky)
     if(NumUtils::LinearSolver::solve(A, b, x, NumUtils::SolverType::SimplicialLLT)) {
-        std::cout << "求解成功！" << std::endl;
+        cout << "求解成功！" << endl;
     } else {
-        std::cerr << "求解失败！" << std::endl;
+        cerr << "求解失败！" << endl;
         return -1;
     }
 
