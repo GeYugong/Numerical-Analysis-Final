@@ -1,6 +1,6 @@
 /**
  * File: src/problem1/main.cpp
- * Description: 飞行器数据恢复(Q1) + 龙格现象分析(附加题) - 严格遵循作业要求版
+ * Description: 飞行器数据恢复(Q1) + 龙格现象分析(附加题) - 纯控制台输出版
  */
 
 #include <iostream>
@@ -11,11 +11,11 @@
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
-// Windows环境下为了正确显示中文可能需要包含此头文件，或配置控制台编码
+// Windows环境下为了正确显示中文可能需要包含此头文件
 // #include <windows.h> 
 #include "../../include/NumCpp.h"
 
-// 辅助函数：读取CSV文件
+// 辅助函数：读取CSV文件 (这个必须保留，因为要读取输入数据)
 std::vector<Point> readCSV(const std::string &filename)
 {
     std::vector<Point> data;
@@ -46,7 +46,6 @@ std::vector<Point> readCSV(const std::string &filename)
             }
             catch (...)
             {
-                // 如果是 NaN 或无法转换，存入标记值
                 data.push_back({t, -9999.0});
             }
         }
@@ -103,16 +102,22 @@ void runBonusQuestion()
     std::cout << "   正在运行附加题：龙格现象分析 (Runge's Phenomenon)" << std::endl;
     std::cout << "==========================================" << std::endl;
 
-    // 目标函数
     auto f = [](double x)
     { return 1.0 / (1.0 + 25.0 * x * x); };
 
-    // 需要测试的节点数量 n (等分点数量 = n+1)
     std::vector<int> n_values = {2, 4, 6, 8, 10};
+
+    // 打印表头
+    std::cout << std::left << std::setw(6) << "n" 
+              << std::setw(15) << "Lagrange误差" 
+              << std::setw(15) << "Newton误差" 
+              << std::setw(15) << "分段线性误差" 
+              << std::setw(15) << "三次样条误差" << std::endl;
+    std::cout << std::string(70, '-') << std::endl;
 
     for (int n : n_values)
     {
-        // 1. 生成插值节点 (在 [-5, 5] 上等距分布)
+        // 1. 生成插值节点
         std::vector<Point> nodes;
         double start = -5.0, end = 5.0;
         double step = (end - start) / n;
@@ -126,12 +131,7 @@ void runBonusQuestion()
         // 2. 准备三次样条对象
         CubicSpline spline(nodes);
 
-        // 3. 在密集网格上计算插值结果并导出
-        std::string filename = "data/bonus_runge_n" + std::to_string(n) + ".csv";
-        std::ofstream outfile(filename);
-        outfile << "x,True,Lagrange,Newton,Piecewise,Spline\n";
-
-        // 生成 200 个绘图点
+        // 3. 计算误差 (不再写入文件，仅计算最大误差)
         double plot_step = (end - start) / 200.0;
         double max_err_lagrange = 0.0;
         double max_err_newton = 0.0;
@@ -148,28 +148,23 @@ void runBonusQuestion()
             double y_pw = Interpolator::piecewiseLinear(nodes, x);
             double y_spl = spline.evaluate(x);
 
-            // 记录误差用于简单的控制台输出
             max_err_lagrange = std::max(max_err_lagrange, std::abs(y_lag - y_true));
             max_err_newton = std::max(max_err_newton, std::abs(y_new - y_true));
             max_err_piecewise = std::max(max_err_piecewise, std::abs(y_pw - y_true));
             max_err_spline = std::max(max_err_spline, std::abs(y_spl - y_true));
-
-            outfile << x << "," << y_true << "," << y_lag << "," << y_new << "," << y_pw << "," << y_spl << "\n";
         }
 
-        std::cout << "n=" << n << ": 数据已保存至 " << filename << std::endl;
-        std::cout << "     最大误差 (拉格朗日) : " << max_err_lagrange << std::endl;
-        std::cout << "     最大误差 (牛顿法)   : " << max_err_newton << std::endl;
-        std::cout << "     最大误差 (分段线性) : " << max_err_piecewise << std::endl;
-        std::cout << "     最大误差 (三次样条) : " << max_err_spline << std::endl;
+        // 表格形式输出
+        std::cout << std::left << std::setw(6) << n 
+                  << std::setw(15) << max_err_lagrange 
+                  << std::setw(15) << max_err_newton 
+                  << std::setw(15) << max_err_piecewise 
+                  << std::setw(15) << max_err_spline << std::endl;
     }
 }
 
 int main()
 {
-    // 如果在 Windows 控制台乱码，可以尝试取消下面这一行的注释来设置 UTF-8 编码
-    // system("chcp 65001");
-
     // ==========================================
     // Part 1: 数据读取与插值恢复
     // ==========================================
@@ -179,14 +174,13 @@ int main()
 
     if (flightData.empty())
     {
-        std::cerr << "加载数据错误。请检查 main.cpp 的文件路径是否正确。\n";
+        std::cerr << "加载数据错误。请检查 main.cpp 的文件路径。\n";
         return 1;
     }
 
     std::vector<Point> group1 = {getPointByTime(flightData, 4), getPointByTime(flightData, 5), getPointByTime(flightData, 9)};
     std::vector<Point> group2 = {getPointByTime(flightData, 5), getPointByTime(flightData, 9), getPointByTime(flightData, 10)};
 
-    // 补全数据并打印结果
     std::cout << "--- [步骤 1] 数据恢复 (插值算法) ---" << std::endl;
     
     double h6 = Interpolator::lagrange(group1, 6.0);
@@ -207,80 +201,49 @@ int main()
     // ==========================================
     std::cout << "\n--- [步骤 2] 模型构建与回归 (多项式拟合对比) ---" << std::endl;
     
-    // 1. 尝试线性拟合 (h = bt + c)
-    // Degree = 1
+    // 1. 尝试线性拟合
     Vector coeffs_lin = performPolyFit(flightData, 1);
-    
-    // 计算线性模型的 MSE
     double mse_lin = 0.0;
-    for (const auto &p : flightData)
-    {
-        // coeffs[0] 是常数项, coeffs[1] 是一次项
+    for (const auto &p : flightData) {
         double pred = coeffs_lin[1] * p.t + coeffs_lin[0];
         mse_lin += std::pow(pred - p.h, 2);
     }
     mse_lin /= flightData.size();
 
-    // 2. 尝试二次拟合 (h = at^2 + bt + c)
-    // Degree = 2
+    // 2. 尝试二次拟合
     Vector coeffs_quad = performPolyFit(flightData, 2);
-    
-    // 计算二次模型的 MSE
     double mse_quad = 0.0;
-    for (const auto &p : flightData)
-    {
-        // coeffs[0]常数, coeffs[1]一次, coeffs[2]二次
+    for (const auto &p : flightData) {
         double pred = coeffs_quad[2] * p.t * p.t + coeffs_quad[1] * p.t + coeffs_quad[0];
         mse_quad += std::pow(pred - p.h, 2);
     }
     mse_quad /= flightData.size();
 
     // 3. 输出对比结果与论证
-    std::cout << "模型对比结果 (MSE/RMSE):" << std::endl;
-    std::cout << "  线性模型 (Linear) MSE   : " << mse_lin << std::endl;
-    std::cout << "  二次模型 (Quadratic) MSE: " << mse_quad << std::endl;
+    std::cout << "模型对比结果 (MSE):" << std::endl;
+    std::cout << "  线性模型   MSE: " << mse_lin << std::endl;
+    std::cout << "  二次模型   MSE: " << mse_quad << std::endl;
 
     std::cout << "\n论证结论：" << std::endl;
     if (mse_quad < mse_lin) {
-        std::cout << "  1. 数据显示二次模型的均方误差 (MSE) 显著小于线性模型 (" 
-                  << mse_quad << " < " << mse_lin << ")。" << std::endl;
-        std::cout << "  2. 物理学原理表明，在忽略空气阻力巨变的情况下，垂直运动满足 h = at^2 + bt + c。" << std::endl;
-        std::cout << "  因此，二次模型更适合描述飞行器的运动轨迹。" << std::endl;
-    } else {
-        std::cout << "  警告：线性模型误差更小，请检查数据或算法。" << std::endl;
+        std::cout << "  数据显示二次模型的均方误差 (MSE) 显著小于线性模型。" << std::endl;
+        std::cout << "  结合物理学原理 (h=at^2+bt+c)，二次模型更适合。" << std::endl;
     }
 
-    // 4. 确定最终模型参数 (用于后续步骤)
-    // 使用二次拟合的结果
     double c = coeffs_quad[0];
     double b = coeffs_quad[1];
     double a = coeffs_quad[2];
 
-    std::cout << "\n最终拟合函数表达式: h(t) = " << a << " * t^2 + " << b << " * t + " << c << std::endl;
-
-    // 导出拟合结果用于绘图
-    std::ofstream outfile("data/regression_result.csv");
-    outfile << "t,h_real,h_pred_linear,h_pred_quadratic\n";
-    for (const auto &p : flightData)
-    {
-        double pred_lin = coeffs_lin[1] * p.t + coeffs_lin[0];
-        double pred_quad = a * p.t * p.t + b * p.t + c;
-        outfile << p.t << "," << p.h << "," << pred_lin << "," << pred_quad << "\n";
-    }
-    std::cout << "详细拟合数据已保存至 data/regression_result.csv" << std::endl;
+    std::cout << "最终拟合函数表达式: h(t) = " << a << " * t^2 + " << b << " * t + " << c << std::endl;
 
     // ==========================================
     // Part 3: 落地时间预测 (Newton法)
     // ==========================================
     std::cout << "\n--- [步骤 3] 落地时间预测 ---" << std::endl;
 
-    // 定义高度函数 h(t) 和其导数 h'(t) = 2at + b
-    auto h_func = [&](double t)
-    { return a * t * t + b * t + c; };
-    auto h_deriv = [&](double t)
-    { return 2 * a * t + b; };
+    auto h_func = [&](double t) { return a * t * t + b * t + c; };
+    auto h_deriv = [&](double t) { return 2 * a * t + b; };
 
-    // 使用牛顿法，初始猜测 t=14
     double landing_time = Solvers::newtonMethod(h_func, h_deriv, 14.0);
 
     std::cout << "预测落地时间 (h=0): " << std::setprecision(6) << std::fixed << landing_time << " 秒" << std::endl;
@@ -290,35 +253,19 @@ int main()
     // ==========================================
     std::cout << "\n--- [步骤 4] 引擎推力控制 (SOR 方法) ---" << std::endl;
 
-    // 方程组:
-    // 4x1 + 3x2       = 24
-    // 3x1 + 4x2 - x3  = 30
-    //       -x2 + 4x3 = -24
-
-    Matrix A_eng = {
-        {4.0, 3.0, 0.0},
-        {3.0, 4.0, -1.0},
-        {0.0, -1.0, 4.0}};
+    Matrix A_eng = {{4.0, 3.0, 0.0}, {3.0, 4.0, -1.0}, {0.0, -1.0, 4.0}};
     Vector b_eng = {24.0, 30.0, -24.0};
 
-    Vector x0 = {1.0, 1.0, 1.0}; // 初始猜测
-    double omega = 1.25;         // 松弛因子
-    double tol = 1e-6;           // 容差
-
-    // 调用 SOR 求解
-    std::pair<Vector, int> result = LinearAlgebra::solveSOR(A_eng, b_eng, omega, x0, tol, 100);
+    std::pair<Vector, int> result = LinearAlgebra::solveSOR(A_eng, b_eng, 1.25, {1,1,1}, 1e-6, 100);
     Vector thrusts = result.first;
     int iterations = result.second;
 
     std::cout << "SOR 迭代收敛于 " << iterations << " 次迭代。" << std::endl;
-    std::cout << "引擎推力解:" << std::endl;
-    std::cout << "x1 = " << thrusts[0] << std::endl;
-    std::cout << "x2 = " << thrusts[1] << std::endl;
-    std::cout << "x3 = " << thrusts[2] << std::endl;
+    std::cout << "引擎推力解: x1=" << thrusts[0] << ", x2=" << thrusts[1] << ", x3=" << thrusts[2] << std::endl;
+
     // ------------------------------------------
     // 运行附加题
     // ------------------------------------------
-
     runBonusQuestion();
     return 0;
 }

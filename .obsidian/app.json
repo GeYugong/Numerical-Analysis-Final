@@ -1,8 +1,8 @@
 {
-  "newLinkFormat": "absolute",
+  "newLinkFormat": "relative",
   "useMarkdownLinks": true,
   "attachmentFolderPath": "src/images",
-  "alwaysUpdateLinks": true,
+  "alwaysUpdateLinks": false,
   "pdfExportSettings": {
     "pageSize": "Letter",
     "landscape": false,
