@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
+                "file": "src/problem3/T3.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "基于有限体积法(FVM)的二维稳态热传导数值模拟"
+              "title": "T3"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
+                "file": "src/problem3/T3.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "基于有限体积法(FVM)的二维稳态热传导数值模拟 的反向链接列表"
+              "title": "T3 的反向链接列表"
             }
           },
           {
@@ -185,7 +185,10 @@
   "active": "58a923049c45da1d",
   "lastOpenFiles": [
     "src/problem1/飞行器遥测数据分析与控制系统.md",
+    "src/problem1/question(corrected).md",
+    "src/problem3/T3.md",
     "src/problem2/基于有限体积法(FVM)的二维稳态热传导数值模拟.md",
+    "src/problem3",
     "src/images/Steady-state temperature field distribution.png",
     "src/images/Runge phenomenon_new.png",
     "src/images/aircraft.png",
@@ -193,7 +196,6 @@
     "src/images/Runge_phenomenon.png",
     "src/images/Runge_phenomenon_new.png",
     "README.md",
-    "src/problem1/question(corrected).md",
     "src/problem2/question.md",
     "src/problem2/result_plot_cn.png",
     "src/problem2/result_plot.png",
@@ -206,7 +208,6 @@
     "src/problem2/main.cpp",
     "tmp_test2.txt",
     "tmp_test.txt",
-    "src/images",
     "src/images.md",
     "runge_comparison_cn.png",
     "regression_curve_cn.png",
