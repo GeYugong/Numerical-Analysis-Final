@@ -139,7 +139,7 @@ $$a_P T_P = a_E T_E + a_W T_W + a_N T_N + a_S T_S + S_u$$
 #include <fstream>
 #include <string>
 
-namespace NumUtils { // 命名空间已重命名
+namespace NumUtils { 
     using SpMat = Eigen::SparseMatrix<double>;
     using Triplet = Eigen::Triplet<double>;
     using Vector = Eigen::VectorXd;
@@ -152,13 +152,11 @@ namespace NumUtils { // 命名空间已重命名
         // 求解 Ax = b
         static bool solve(const SpMat& A, const Vector& b, Vector& x, SolverType type = SolverType::SimplicialLLT) {
             if (type == SolverType::SimplicialLLT) {
-                // SimplicialLLT 适用于对称正定矩阵 (SPD)，本题的热传导矩阵符合此特性
                 Eigen::SimplicialLLT<SpMat> solver(A);
                 x = solver.solve(b);
                 return (solver.info() == Eigen::Success);
             } 
             else if (type == SolverType::SparseLU) {
-                // SparseLU 适用于一般方阵
                 Eigen::SparseLU<SpMat> solver;
                 solver.compute(A);
                 x = solver.solve(b);
@@ -192,12 +190,12 @@ namespace NumUtils { // 命名空间已重命名
 #include <iostream>
 
 int main() {
-    // 1. 参数定义 (对应题目要求：50*50均匀网格 [cite: 36])
+    // 1. 参数定义 (对应题目要求：50*50均匀网格)
     const int Nx = 50, Ny = 50;
     double dx = 1.0/Nx, dy = 1.0/Ny, k = 1.0;
     int N_dof = Nx * Ny;
 
-    std::cout << "Initializing FVM Solver with Grid: " << Nx << "x" << Ny << "..." << std::endl;
+    std::cout << "初始化有限体积法求解器，网格大小: " << Nx << "x" << Ny << "..." << std::endl;
 
     // 2. 准备稀疏矩阵的三元组
     std::vector<NumUtils::Triplet> triplets;
@@ -218,7 +216,7 @@ int main() {
             int P = j * Nx + i; // 当前节点索引
             double a_P = 0.0;   // 中心系数累加器
 
-            // --- 处理西边界 (Left, i=0) T=100 ---
+            // 处理西边界 (Left, i=0) T=100 
             if (i == 0) { 
                 // Dirichlet 边界修正: a_w 项移至右端项 b
                 double dist_correction = 2.0; // 距离为 h/2，通量增加一倍
@@ -229,7 +227,7 @@ int main() {
                 a_P += a_w; 
             }
 
-            // --- 处理东边界 (Right, i=Nx-1) T=0 ---
+            // 处理东边界 (Right, i=Nx-1) T=0 
             if (i == Nx-1) { 
                 // Dirichlet 边界修正: T=0，右端项增加 0
                 double dist_correction = 2.0;
@@ -240,14 +238,14 @@ int main() {
                 a_P += a_e; 
             }
 
-            // --- 处理南边界 (Bottom, j=0) 绝热 ---
+            // 处理南边界 (Bottom, j=0) 绝热 
             if (j > 0) { 
                 triplets.emplace_back(P, P-Nx, -a_s); 
                 a_P += a_s; 
             }
             // 绝热边界处通量为0，不需要对 a_P 或 b 做额外操作，相当于 a_s=0
 
-            // --- 处理北边界 (Top, j=Ny-1) 绝热 ---
+            // 处理北边界 (Top, j=Ny-1) 绝热 
             if (j < Ny-1) { 
                 triplets.emplace_back(P, P+Nx, -a_n); 
                 a_P += a_n; 
@@ -263,13 +261,13 @@ int main() {
     A.setFromTriplets(triplets.begin(), triplets.end());
     
     NumUtils::Vector x(N_dof);
-    std::cout << "Solving linear system..." << std::endl;
+    std::cout << "求解线性系统..." << std::endl;
     
-    // 使用 LLT 分解 (Cholesky)，速度最快
+    // 使用 LLT 分解 (Cholesky)
     if(NumUtils::LinearSolver::solve(A, b, x, NumUtils::SolverType::SimplicialLLT)) {
-        std::cout << "Solved successfully!" << std::endl;
+        std::cout << "求解成功！" << std::endl;
     } else {
-        std::cerr << "Solver failed!" << std::endl;
+        std::cerr << "求解失败！" << std::endl;
         return -1;
     }
 
@@ -277,7 +275,6 @@ int main() {
     NumUtils::Matrix T_field(Ny, Nx);
     for(int j=0; j<Ny; ++j) {
         for(int i=0; i<Nx; ++i) {
-            // 注意：存储时通常行优先，对应物理坐标 y, x
             T_field(j,i) = x(j*Nx+i);
         }
     }

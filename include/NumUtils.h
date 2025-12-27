@@ -14,7 +14,7 @@
 #include <fstream>
 #include <string>
 
-namespace NumUtils { // 命名空间已重命名
+namespace NumUtils { 
     using SpMat = Eigen::SparseMatrix<double>;
     using Triplet = Eigen::Triplet<double>;
     using Vector = Eigen::VectorXd;
@@ -27,13 +27,11 @@ namespace NumUtils { // 命名空间已重命名
         // 求解 Ax = b
         static bool solve(const SpMat& A, const Vector& b, Vector& x, SolverType type = SolverType::SimplicialLLT) {
             if (type == SolverType::SimplicialLLT) {
-                // SimplicialLLT 适用于对称正定矩阵 (SPD)，本题的热传导矩阵符合此特性
                 Eigen::SimplicialLLT<SpMat> solver(A);
                 x = solver.solve(b);
                 return (solver.info() == Eigen::Success);
             } 
             else if (type == SolverType::SparseLU) {
-                // SparseLU 适用于一般方阵
                 Eigen::SparseLU<SpMat> solver;
                 solver.compute(A);
                 x = solver.solve(b);
