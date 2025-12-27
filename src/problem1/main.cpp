@@ -1,6 +1,6 @@
 /**
  * File: src/problem1/main.cpp
- * Description: 飞行器数据恢复(Q1) + 龙格现象分析(Bonus)
+ * Description: 飞行器数据恢复(Q1) + 龙格现象分析(附加题) - 中文输出版
  */
 
 #include <iostream>
@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <cmath>
 #include <iomanip>
+// Windows环境下为了正确显示中文可能需要包含此头文件，或配置控制台编码
+// #include <windows.h> 
 #include "../../include/NumCpp.h"
 
 // 辅助函数：读取CSV文件
@@ -22,7 +24,7 @@ std::vector<Point> readCSV(const std::string &filename)
 
     if (!file.is_open())
     {
-        std::cerr << "Error: Could not open file " << filename << std::endl;
+        std::cerr << "错误：无法打开文件 " << filename << std::endl;
         return data;
     }
 
@@ -44,6 +46,7 @@ std::vector<Point> readCSV(const std::string &filename)
             }
             catch (...)
             {
+                // 如果是 NaN 或无法转换，存入标记值
                 data.push_back({t, -9999.0});
             }
         }
@@ -90,13 +93,14 @@ Vector performPolyFit(const std::vector<Point> &data, int degree)
     // 3. 求解
     return LinearAlgebra::solveGaussian(A, B);
 }
+
 // ==========================================
 // 附加题逻辑: 龙格现象分析
 // ==========================================
 void runBonusQuestion()
 {
     std::cout << "\n==========================================" << std::endl;
-    std::cout << "   Running Bonus Question: Runge's Phenomenon" << std::endl;
+    std::cout << "   正在运行附加题：龙格现象分析 (Runge's Phenomenon)" << std::endl;
     std::cout << "==========================================" << std::endl;
 
     // 目标函数
@@ -153,48 +157,62 @@ void runBonusQuestion()
             outfile << x << "," << y_true << "," << y_lag << "," << y_new << "," << y_pw << "," << y_spl << "\n";
         }
 
-        std::cout << "n=" << n << ": Saved to " << filename << std::endl;
-        std::cout << "     Max Error (Lagrange) : " << max_err_lagrange << std::endl;
-        std::cout << "     Max Error (Newton)   : " << max_err_newton << std::endl;
-        std::cout << "     Max Error (Piecewise): " << max_err_piecewise << std::endl;
-        std::cout << "     Max Error (Spline)   : " << max_err_spline << std::endl;
+        std::cout << "n=" << n << ": 数据已保存至 " << filename << std::endl;
+        std::cout << "     最大误差 (拉格朗日) : " << max_err_lagrange << std::endl;
+        std::cout << "     最大误差 (牛顿法)   : " << max_err_newton << std::endl;
+        std::cout << "     最大误差 (分段线性) : " << max_err_piecewise << std::endl;
+        std::cout << "     最大误差 (三次样条) : " << max_err_spline << std::endl;
     }
 }
+
 int main()
 {
+    // 如果在 Windows 控制台乱码，可以尝试取消下面这一行的注释来设置 UTF-8 编码
+    // system("chcp 65001");
+
     // ==========================================
     // Part 1: 数据读取与插值恢复
     // ==========================================
+    // TODO: 请确保此处的路径与你的实际路径一致
     std::string filepath = "D:\\0VS_user\\Numerical-Analysis-Final\\data\\flight_data.csv";
     std::vector<Point> flightData = readCSV(filepath);
 
     if (flightData.empty())
     {
-        std::cerr << "Error loading data.\n";
+        std::cerr << "加载数据错误。请检查 main.cpp 第 147 行的文件路径是否正确。\n";
         return 1;
     }
 
     std::vector<Point> group1 = {getPointByTime(flightData, 4), getPointByTime(flightData, 5), getPointByTime(flightData, 9)};
     std::vector<Point> group2 = {getPointByTime(flightData, 5), getPointByTime(flightData, 9), getPointByTime(flightData, 10)};
 
-    // 补全数据
-    flightData[6].h = Interpolator::lagrange(group1, 6.0);
-    flightData[7].h = Interpolator::lagrange(group1, 7.0);
-    flightData[8].h = Interpolator::lagrange(group2, 8.0);
+    // 补全数据并打印结果
+    std::cout << "--- [步骤 1] 数据恢复 (插值算法) ---" << std::endl;
+    
+    double h6 = Interpolator::lagrange(group1, 6.0);
+    double h7 = Interpolator::lagrange(group1, 7.0);
+    double h8 = Interpolator::lagrange(group2, 8.0);
 
-    std::cout << "Data restoration complete.\n";
+    flightData[6].h = h6;
+    flightData[7].h = h7;
+    flightData[8].h = h8;
+
+    std::cout << "恢复 t=6: " << h6 << std::endl;
+    std::cout << "恢复 t=7: " << h7 << std::endl;
+    std::cout << "恢复 t=8: " << h8 << std::endl;
+    std::cout << "数据恢复完成。\n";
 
     // ==========================================
     // Part 2: 二次多项式回归
     // ==========================================
-    std::cout << "\n--- [Step 2] Performing Quadratic Regression ---" << std::endl;
+    std::cout << "\n--- [步骤 2] 执行二次多项式拟合 ---" << std::endl;
     Vector coeffs = performPolyFit(flightData, 2); // 结果为 [c, b, a]
 
     double c = coeffs[0];
     double b = coeffs[1];
     double a = coeffs[2];
 
-    std::cout << "Fitted Model: h(t) = " << a << " * t^2 + " << b << " * t + " << c << std::endl;
+    std::cout << "拟合模型: h(t) = " << a << " * t^2 + " << b << " * t + " << c << std::endl;
 
     // 计算MSE
     double mse = 0.0;
@@ -204,7 +222,7 @@ int main()
         mse += std::pow(pred - p.h, 2);
     }
     mse /= flightData.size();
-    std::cout << "MSE: " << mse << std::endl;
+    std::cout << "均方误差 (MSE): " << mse << std::endl;
 
     // 导出拟合结果
     std::ofstream outfile("data/regression_result.csv");
@@ -214,12 +232,12 @@ int main()
         double pred = a * p.t * p.t + b * p.t + c;
         outfile << p.t << "," << p.h << "," << pred << "\n";
     }
-    std::cout << "Regression data saved to data/regression_result.csv" << std::endl;
+    std::cout << "拟合数据已保存至 data/regression_result.csv" << std::endl;
 
     // ==========================================
     // Part 3: 落地时间预测 (Newton法)
     // ==========================================
-    std::cout << "\n--- [Step 3] Landing Time Prediction ---" << std::endl;
+    std::cout << "\n--- [步骤 3] 落地时间预测 ---" << std::endl;
 
     // 定义高度函数 h(t) 和其导数 h'(t) = 2at + b
     auto h_func = [&](double t)
@@ -230,12 +248,12 @@ int main()
     // 使用牛顿法，初始猜测 t=14
     double landing_time = Solvers::newtonMethod(h_func, h_deriv, 14.0);
 
-    std::cout << "Predicted Landing Time (h=0): " << std::setprecision(6) << std::fixed << landing_time << " s" << std::endl;
+    std::cout << "预测落地时间 (h=0): " << std::setprecision(6) << std::fixed << landing_time << " 秒" << std::endl;
 
     // ==========================================
     // Part 4: 引擎推力解算 (SOR迭代法)
     // ==========================================
-    std::cout << "\n--- [Step 4] Engine Thrust Control (SOR Method) ---" << std::endl;
+    std::cout << "\n--- [步骤 4] 引擎推力控制 (SOR 方法) ---" << std::endl;
 
     // 方程组:
     // 4x1 + 3x2       = 24
@@ -257,8 +275,8 @@ int main()
     Vector thrusts = result.first;
     int iterations = result.second;
 
-    std::cout << "SOR Converged in " << iterations << " iterations." << std::endl;
-    std::cout << "Engine Thrusts Solution:" << std::endl;
+    std::cout << "SOR 迭代收敛于 " << iterations << " 次迭代。" << std::endl;
+    std::cout << "引擎推力解:" << std::endl;
     std::cout << "x1 = " << thrusts[0] << std::endl;
     std::cout << "x2 = " << thrusts[1] << std::endl;
     std::cout << "x3 = " << thrusts[2] << std::endl;
