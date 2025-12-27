@@ -7,7 +7,7 @@ int main() {
     double dx = 1.0/Nx, dy = 1.0/Ny, k = 1.0;
     int N_dof = Nx * Ny;
 
-    std::cout << "Initializing FVM Solver with Grid: " << Nx << "x" << Ny << "..." << std::endl;
+    std::cout << "初始化有限体积法求解器，网格大小: " << Nx << "x" << Ny << "..." << std::endl;
 
     // 2. 准备稀疏矩阵的三元组
     std::vector<NumUtils::Triplet> triplets;
@@ -73,13 +73,13 @@ int main() {
     A.setFromTriplets(triplets.begin(), triplets.end());
     
     NumUtils::Vector x(N_dof);
-    std::cout << "Solving linear system..." << std::endl;
+    std::cout << "求解线性系统..." << std::endl;
     
     // 使用 LLT 分解 (Cholesky)，速度最快
     if(NumUtils::LinearSolver::solve(A, b, x, NumUtils::SolverType::SimplicialLLT)) {
-        std::cout << "Solved successfully!" << std::endl;
+        std::cout << "求解成功！" << std::endl;
     } else {
-        std::cerr << "Solver failed!" << std::endl;
+        std::cerr << "求解失败！" << std::endl;
         return -1;
     }
 

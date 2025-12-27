@@ -291,57 +291,9 @@ int main() {
 
 ## 5. 结果可视化与分析
 
-为了直观展示计算结果，我们编写了 Python 脚本 `plot_result.py`，配置了中文支持并实现了自动路径探测。
-
-### 5.1 可视化脚本 (`src/problem2/plot_result.py`)
-
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import os
-
-plt.rcParams['font.sans-serif'] = ['SimHei'] 
-plt.rcParams['axes.unicode_minus'] = False 
-
-current_dir = os.path.dirname(os.path.abspath(__file__))
-csv_path = os.path.join(current_dir, "temperature_field.csv")
-
-try:
-    data = pd.read_csv(csv_path, header=None).values
-except FileNotFoundError:
-    print(f"错误：在 {csv_path} 找不到数据文件，请先运行 C++ 求解器。")
-    exit()
-
-Ny, Nx = data.shape
-x = np.linspace(0, 1, Nx)
-y = np.linspace(0, 1, Ny)
-X, Y = np.meshgrid(x, y)
-
-plt.figure(figsize=(10, 8))
-
-cp = plt.contourf(X, Y, data, 50, cmap='inferno') 
-cbar = plt.colorbar(cp)
-cbar.set_label('温度 ($^\circ$C)', rotation=270, labelpad=15, fontsize=12)
-
-cs = plt.contour(X, Y, data, 10, colors='white', alpha=0.5, linewidths=1)
-plt.clabel(cs, inline=True, fontsize=10, fmt='%1.0f')
-
-plt.title(f'稳态温度场分布 ({Nx}x{Ny} 均匀网格)', fontsize=14)
-plt.xlabel('x (位置)', fontsize=12)
-plt.ylabel('y (位置)', fontsize=12)
-
-save_path = os.path.join(current_dir, "result_plot_cn.png")
-plt.savefig(save_path, dpi=300)
-print(f"中文可视化结果已保存为: {save_path}")
-plt.show()
-```
-
-### 5.2 结果物理验证与分析
-
+为了直观展示计算结果，我们编写了 Python 脚本 `plot_result.py`，实现了自动路径探测。
 通过运行程序并生成可视化云图如下，我们可以对计算结果进行如下物理验证：
-![](src/images/Steady-state%20temperature%20field%20distribution.png)
+![](../images/Steady-state%20temperature%20field%20distribution.png)
 
 1. **一维主导特性与绝热验证**：
     
@@ -375,9 +327,9 @@ plt.show()
 运行结果：
 
 ```text
-Initializing FVM Solver with Grid: 50x50...
-Solving linear system...
-Solved successfully!
+初始化有限体积法求解器，网格大小: 50x50...
+求解线性系统...
+求解成功！
 Data successfully saved to temperature_field.csv
 ```
 
