@@ -1,6 +1,6 @@
 /**
  * File: src/problem1/main.cpp
- * Description: 飞行器数据恢复(Q1) + 龙格现象分析(附加题) - 中文输出版
+ * Description: 飞行器数据恢复(Q1) + 龙格现象分析(附加题) - 严格遵循作业要求版
  */
 
 #include <iostream>
@@ -179,7 +179,7 @@ int main()
 
     if (flightData.empty())
     {
-        std::cerr << "加载数据错误。请检查 main.cpp 第 147 行的文件路径是否正确。\n";
+        std::cerr << "加载数据错误。请检查 main.cpp 的文件路径是否正确。\n";
         return 1;
     }
 
@@ -203,36 +203,71 @@ int main()
     std::cout << "数据恢复完成。\n";
 
     // ==========================================
-    // Part 2: 二次多项式回归
+    // Part 2: 模型构建与回归 (对比线性与二次模型)
     // ==========================================
-    std::cout << "\n--- [步骤 2] 执行二次多项式拟合 ---" << std::endl;
-    Vector coeffs = performPolyFit(flightData, 2); // 结果为 [c, b, a]
-
-    double c = coeffs[0];
-    double b = coeffs[1];
-    double a = coeffs[2];
-
-    std::cout << "拟合模型: h(t) = " << a << " * t^2 + " << b << " * t + " << c << std::endl;
-
-    // 计算MSE
-    double mse = 0.0;
+    std::cout << "\n--- [步骤 2] 模型构建与回归 (多项式拟合对比) ---" << std::endl;
+    
+    // 1. 尝试线性拟合 (h = bt + c)
+    // Degree = 1
+    Vector coeffs_lin = performPolyFit(flightData, 1);
+    
+    // 计算线性模型的 MSE
+    double mse_lin = 0.0;
     for (const auto &p : flightData)
     {
-        double pred = a * p.t * p.t + b * p.t + c;
-        mse += std::pow(pred - p.h, 2);
+        // coeffs[0] 是常数项, coeffs[1] 是一次项
+        double pred = coeffs_lin[1] * p.t + coeffs_lin[0];
+        mse_lin += std::pow(pred - p.h, 2);
     }
-    mse /= flightData.size();
-    std::cout << "均方误差 (MSE): " << mse << std::endl;
+    mse_lin /= flightData.size();
 
-    // 导出拟合结果
+    // 2. 尝试二次拟合 (h = at^2 + bt + c)
+    // Degree = 2
+    Vector coeffs_quad = performPolyFit(flightData, 2);
+    
+    // 计算二次模型的 MSE
+    double mse_quad = 0.0;
+    for (const auto &p : flightData)
+    {
+        // coeffs[0]常数, coeffs[1]一次, coeffs[2]二次
+        double pred = coeffs_quad[2] * p.t * p.t + coeffs_quad[1] * p.t + coeffs_quad[0];
+        mse_quad += std::pow(pred - p.h, 2);
+    }
+    mse_quad /= flightData.size();
+
+    // 3. 输出对比结果与论证
+    std::cout << "模型对比结果 (MSE/RMSE):" << std::endl;
+    std::cout << "  线性模型 (Linear) MSE   : " << mse_lin << std::endl;
+    std::cout << "  二次模型 (Quadratic) MSE: " << mse_quad << std::endl;
+
+    std::cout << "\n论证结论：" << std::endl;
+    if (mse_quad < mse_lin) {
+        std::cout << "  1. 数据显示二次模型的均方误差 (MSE) 显著小于线性模型 (" 
+                  << mse_quad << " < " << mse_lin << ")。" << std::endl;
+        std::cout << "  2. 物理学原理表明，在忽略空气阻力巨变的情况下，垂直运动满足 h = at^2 + bt + c。" << std::endl;
+        std::cout << "  因此，二次模型更适合描述飞行器的运动轨迹。" << std::endl;
+    } else {
+        std::cout << "  警告：线性模型误差更小，请检查数据或算法。" << std::endl;
+    }
+
+    // 4. 确定最终模型参数 (用于后续步骤)
+    // 使用二次拟合的结果
+    double c = coeffs_quad[0];
+    double b = coeffs_quad[1];
+    double a = coeffs_quad[2];
+
+    std::cout << "\n最终拟合函数表达式: h(t) = " << a << " * t^2 + " << b << " * t + " << c << std::endl;
+
+    // 导出拟合结果用于绘图
     std::ofstream outfile("data/regression_result.csv");
-    outfile << "t,h_real,h_pred\n";
+    outfile << "t,h_real,h_pred_linear,h_pred_quadratic\n";
     for (const auto &p : flightData)
     {
-        double pred = a * p.t * p.t + b * p.t + c;
-        outfile << p.t << "," << p.h << "," << pred << "\n";
+        double pred_lin = coeffs_lin[1] * p.t + coeffs_lin[0];
+        double pred_quad = a * p.t * p.t + b * p.t + c;
+        outfile << p.t << "," << p.h << "," << pred_lin << "," << pred_quad << "\n";
     }
-    std::cout << "拟合数据已保存至 data/regression_result.csv" << std::endl;
+    std::cout << "详细拟合数据已保存至 data/regression_result.csv" << std::endl;
 
     // ==========================================
     // Part 3: 落地时间预测 (Newton法)
